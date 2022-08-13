@@ -1,28 +1,57 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <NavBar />
+    <CountryTable />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import NavBar from "./components/NavBar.vue";
+import CountryTable from "./components/CountryTable.vue";
+import axios from "axios";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
+    NavBar,
+    CountryTable,
+  },
+  data() {
+    return {
+      info: [],
+      value: ""
+    };
+  },
+  created() {
+    axios
+      .get("https://restcountries.com/v2/all")
+      .then((response) => (this.info = response.data));
+  },
+  methods: {
+    onValueChanged(value){
+      this.value=value
+    }
+  },
+  computed: {
+    countries(){
+      if(!this.value){
+        return this.info
+      }
+
+      return this.info.filter((c)=>{
+        return (c.name || c.capital).startsWith(this.value)
+        // return c.name.toLowerCase().startsWith(this.value.toLowerCase())
+      })
+    }
   }
-}
+};
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+<template>
+  <div>
+    <nav-bar @value="onValueChanged" />
+    <country-table :info="countries" />
+  </div>
+</template>
+
+<style></style>
