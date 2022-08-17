@@ -19,13 +19,12 @@ export default {
   data() {
     return {
       info: [],
-      value: ""
+      value: "",
     };
   },
   created() {
-    axios
-      .get("https://restcountries.com/v2/all")
-      .then((response) => (this.info = response.data));
+    axios .get("https://restcountries.com/v2/all")
+      .then((response) => (this.info = response.data))
   },
   methods: {
     onValueChanged(value){
@@ -33,14 +32,13 @@ export default {
     }
   },
   computed: {
-    countries(){
+    capitals(){
       if(!this.value){
         return this.info
       }
 
       return this.info.filter((c)=>{
-        return (c.name || c.capital).startsWith(this.value)
-        // return c.name.toLowerCase().startsWith(this.value.toLowerCase())
+        return c.capital?.toLowerCase().startsWith(this.value.toLowerCase())
       })
     }
   }
@@ -49,8 +47,8 @@ export default {
 
 <template>
   <div>
-    <nav-bar @value="onValueChanged" />
-    <country-table :info="countries" />
+    <nav-bar />
+    <country-table @value="onValueChanged" :info="capitals" />
   </div>
 </template>
 
